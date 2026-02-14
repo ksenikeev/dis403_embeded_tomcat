@@ -1,6 +1,9 @@
 package ru.itis.dis403.lab2_1.di.config;
 
+import ru.itis.dis403.lab2_1.di.annotation.Component;
+
 import java.io.File;
+import java.lang.annotation.Annotation;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
@@ -21,7 +24,6 @@ public class PathScan {
         return classes;
     }
 
-
     private static List<Class<?>> find(File file, String scannedPackage) {
         List<Class<?>> classes = new ArrayList<>();
         String resource = scannedPackage + "." + file.getName();
@@ -32,7 +34,10 @@ public class PathScan {
         } else if (resource.endsWith(".class")) {
             String className = resource.substring(0, resource.length() - 6);
             try {
-                classes.add(Class.forName(className));
+                Class clazz = Class.forName(className);
+                if (clazz.isAnnotationPresent(Component.class)) {
+                    classes.add(clazz);
+                }
             } catch (ClassNotFoundException ignore) {
             }
         }
